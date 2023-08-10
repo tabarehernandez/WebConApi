@@ -8,6 +8,7 @@ function fetchPokemon(id) {
         .then(res => res.json())
         .then((data) => {
             createPokemon(data);
+            console.log(data); // para ver los datos 
             spinner.style.display = "none";// oculta el spinner
         });
     //.then(data =>console.log(data))
@@ -20,7 +21,7 @@ let limit = 8;
 previous.addEventListener("click", () => {
     if (offset != 1) {
         offset -= 9;
-        removeChildNodes(pokemonConteiner);//remueve los pokemones que ya estan cargado
+        removeChildNodes(pokemonConteiner);// remueve los pokemones que ya estan cargado
         fetchPokemons(offset, limit);
     }
 });
@@ -45,6 +46,14 @@ function fetchPokemons(offset, limit) {
 
 function createPokemon(pokemon) {
     //creamos la carta
+    const flipCard = document.createElement('div');
+    flipCard.classList.add("flip-card");
+
+    const cardContainer = document.createElement('div');
+    cardContainer.classList.add("card-container");
+
+    flipCard.appendChild(cardContainer);
+
     const card = document.createElement('div');
     card.classList.add('pokemon-block');
 
@@ -70,11 +79,58 @@ function createPokemon(pokemon) {
     card.appendChild(number);
     card.appendChild(name);
 
-    //agrego la carta al conteiner
-    pokemonConteiner.appendChild(card);
+    const cardBack = document.createElement("div");
+    cardBack.classList.add("pokemon-block-back");
+    //se carga en la parte de atras de la carta los 
+    //stats del pokemon
+    cardBack.appendChild(progressBars(pokemon.stats));
+    //cardBack.textContent = "carta de atrasss"; //texto atras
+    //agrego la carta al card container
+    cardContainer.appendChild(card);
+    cardContainer.appendChild(cardBack);
 
+    //agrego la carta al conteiner
+    pokemonConteiner.appendChild(flipCard);// pokemonConteiner.appendChild(card); 
 
 }
+function progressBars(stats) {
+    //se tiene que crear div s
+    const statsContainer = document.createElement("div");
+    statsContainer.classList.add("stats-Container");
+    //le vamos a pasar los stats
+    //se lo pasamos como un array
+    for (let i = 0; i < 3; i++) { //tiene 6 pero se ponen 3
+        const stat = stats[i];
+
+        const statPercent = stat.base_state / 2 + "%";
+        const statContainer = document.createElement("div");
+        
+        statContainer.classList.add("stat-container");
+
+        const statName = document.createElement("p");
+        statName.textContent = stat.stat.name;
+
+        const progress = document.createElement("div");
+        progress.classList.add("progress");
+        //barras de boostraps 
+        const progressBar = document.createElement("div");
+        progressBar.classList.add("progress-bar");
+        progressBar.setAttribute("aria-valuenow", stat.base_stat);
+        progressBar.setAttribute("aria-valuemin", 0);
+        progressBar.setAttribute("aria-valuemax", 200);
+        progressBar.style.width = statPercent;
+        //el numero adentro de la barra
+        progressBar.textContent = stat.base_stat;
+        //agregamos los hijos
+        progress.appendChild(progressBar);
+        statContainer.appendChild(statName);
+        statContainer.appendChild(progress);
+        //se van agregando 
+        statsContainer.appendChild(statContainer);
+    }
+    return statsContainer;
+}
+
 //funcion remueve los elementos del parent 
 function removeChildNodes(parent) {
     while (parent.firstChild) {
