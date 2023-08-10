@@ -1,17 +1,41 @@
 const pokemonConteiner=document.querySelector('.pokemon-container')
+const spinner =document.querySelector("#spinner");
+const previous=document.querySelector("#previous");
+const next=document.querySelector("#next");
 
 function fetchPokemon(id){
     fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
     .then(res =>res.json())
     .then((data) =>{
         createPokemon(data); 
+        spinner.style.display="none";// oculta el spinner
     });
     //.then(data =>console.log(data))
 }
 //fetchPokemon(1);
 
-function fetchPokemons(number){
-    for(let i=1;i<=number;i++)
+let offset=1;
+let limit=8;
+
+previous.addEventListener("click",()=>{
+    if(offset!=1)
+    {
+        offset-=9;
+        fetchPokemons(offset,limit);
+    }
+});
+
+next.addEventListener("click",()=>{
+        offset+=9;
+        fetchPokemons(offset,limit);
+   
+});
+
+
+
+function fetchPokemons(offset,limit){
+    spinner.style.display="block";// muestra el spinner
+    for(let i=offset;i<=offset+limit;i++)
     {
         fetchPokemon(i);
     }
@@ -51,7 +75,8 @@ function createPokemon(pokemon){
     
 }
 
-fetchPokemons(9);
+
+fetchPokemons(offset,limit);
 //generedor de blobs
 //https://lokesh-coder.github.io/blobs.app/?e=6&gw=5&se=927&c=B53471&o=0
 
