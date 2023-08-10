@@ -1,68 +1,69 @@
-const pokemonConteiner=document.querySelector('.pokemon-container')
-const spinner =document.querySelector("#spinner");
-const previous=document.querySelector("#previous");
-const next=document.querySelector("#next");
+const pokemonConteiner = document.querySelector('.pokemon-container')
+const spinner = document.querySelector("#spinner");
+const previous = document.querySelector("#previous");
+const next = document.querySelector("#next");
 
-function fetchPokemon(id){
+function fetchPokemon(id) {
     fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
-    .then(res =>res.json())
-    .then((data) =>{
-        createPokemon(data); 
-        spinner.style.display="none";// oculta el spinner
-    });
+        .then(res => res.json())
+        .then((data) => {
+            createPokemon(data);
+            spinner.style.display = "none";// oculta el spinner
+        });
     //.then(data =>console.log(data))
 }
 //fetchPokemon(1);
 
-let offset=1;
-let limit=8;
+let offset = 1;
+let limit = 8;
 
-previous.addEventListener("click",()=>{
-    if(offset!=1)
-    {
-        offset-=9;
-        fetchPokemons(offset,limit);
+previous.addEventListener("click", () => {
+    if (offset != 1) {
+        offset -= 9;
+        removeChildNodes(pokemonConteiner);//remueve los pokemones que ya estan cargado
+        fetchPokemons(offset, limit);
     }
 });
 
-next.addEventListener("click",()=>{
-        offset+=9;
-        fetchPokemons(offset,limit);
-   
+next.addEventListener("click", () => {
+    //falta control de limite a 800
+    offset += 9;
+    removeChildNodes(pokemonConteiner);//remueve los pokemones que ya estan cargado
+    fetchPokemons(offset, limit);
+
 });
 
 
 
-function fetchPokemons(offset,limit){
-    spinner.style.display="block";// muestra el spinner
-    for(let i=offset;i<=offset+limit;i++)
-    {
+function fetchPokemons(offset, limit) {
+    spinner.style.display = "block";// muestra el spinner
+    for (let i = offset; i <= offset + limit; i++) {
         fetchPokemon(i);
     }
 }
 //fetchPokemons(9);
 
-function createPokemon(pokemon){
+function createPokemon(pokemon) {
     //creamos la carta
-    const card=document.createElement('div');
+    const card = document.createElement('div');
     card.classList.add('pokemon-block');
-    
+
     //creamos el sprite conteiner
-    const spritecontainer=document.createElement('div');
+    const spritecontainer = document.createElement('div');
     //le agragamos una class 
     spritecontainer.classList.add('img-container');
 
-    const sprite=document.createElement('img');
-    sprite.src=pokemon.sprites.front_default
+    const sprite = document.createElement('img');
+    sprite.src = pokemon.sprites.front_default
 
     spritecontainer.appendChild(sprite);
 
-    const number=document.createElement('p');
-    number.textContent=`#${pokemon.id.toString().padStart(3,0)}`;
+    const number = document.createElement('p');
+    number.textContent = `#${pokemon.id.toString().padStart(3, 0)}`;
 
-    const name=document.createElement('p');
+    const name = document.createElement('p');
     name.classList.add('name');
-    name.textContent=pokemon.name
+    name.textContent = pokemon.name
 
     //agrego elementos a la carta
     card.appendChild(spritecontainer);
@@ -72,11 +73,20 @@ function createPokemon(pokemon){
     //agrego la carta al conteiner
     pokemonConteiner.appendChild(card);
 
-    
+
+}
+//funcion remueve los elementos del parent 
+function removeChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);//mientras el parent tenga firstChild removerlo
+    }
+
 }
 
+fetchPokemons(offset, limit);
 
-fetchPokemons(offset,limit);
+
+//  comentarios y links
 //generedor de blobs
 //https://lokesh-coder.github.io/blobs.app/?e=6&gw=5&se=927&c=B53471&o=0
 
@@ -88,4 +98,10 @@ fetchPokemons(offset,limit);
 <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" id="blobSvg">
   <path id="blob" d="M315,350Q135,450,136,252Q137,54,316,152Q495,250,315,350Z" fill="#fdcb6e"></path>
 </svg>
+
+
+<!-- https://getbootstrap.com/docs/5.3/components/pagination/ -->
+
+
+
 */
