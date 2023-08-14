@@ -1,6 +1,7 @@
 const pokemonConteiner = document.querySelector('.pokemon-container')
 const spinner = document.querySelector("#spinner");
 const previous = document.querySelector("#previous");
+
 const next = document.querySelector("#next");
 
 function fetchPokemon(id) {
